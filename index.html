@@ -14,14 +14,17 @@
             "Eu como pão com manteiga no café da manhã"
         </div>
 
-        <div class="flex gap-2 mb-4">
+        <div class="flex gap-2 mb-2">
             <button id="listen-btn" class="flex-1 bg-slate-200 text-slate-700 py-2 rounded-lg font-bold hover:bg-slate-300 transition">Ouvir Frase</button>
             <button id="start-btn" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg font-bold hover:bg-indigo-700 transition">Começar</button>
         </div>
 
-        <button id="next-btn" class="hidden w-full bg-emerald-600 text-white py-2 rounded-lg font-bold hover:bg-emerald-700 transition mb-4">Próxima Frase →</button>
+        <div class="flex gap-2 mb-4">
+            <button id="skip-btn" class="flex-1 bg-slate-100 text-slate-600 py-2 rounded-lg font-bold hover:bg-slate-200 transition">Pular Frase →</button>
+            <button id="next-btn" class="hidden flex-1 bg-emerald-600 text-white py-2 rounded-lg font-bold hover:bg-emerald-700 transition">Próxima Frase →</button>
+        </div>
 
-        <div id="feedback" class="mt-4 p-3 rounded text-sm hidden text-center font-medium"></div>
+        <div id="feedback" class="mt-4 p-3 rounded text-sm hidden font-medium"></div>
     </div>
 
     <script>
@@ -40,6 +43,7 @@
         const startBtn = document.getElementById('start-btn');
         const listenBtn = document.getElementById('listen-btn');
         const nextBtn = document.getElementById('next-btn');
+        const skipBtn = document.getElementById('skip-btn');
         const feedback = document.getElementById('feedback');
         const counter = document.getElementById('counter');
         
@@ -89,16 +93,52 @@
             
             if (normTranscript === normTarget) {
                 feedback.className = "mt-4 p-3 rounded text-sm text-center bg-green-100 text-green-800";
-                feedback.innerText = "✅ Excelente! Você acertou.";
+                feedback.innerText = "✅ Excellent! Perfect pronunciation.";
                 nextBtn.classList.remove('hidden');
             } else {
-                feedback.className = "mt-4 p-3 rounded text-sm text-center bg-red-100 text-red-800";
-                feedback.innerText = "❌ Tente novamente! Você disse: '" + transcript + "'.";
-                nextBtn.classList.add('hidden');
+                feedback.className = "mt-4 p-3 rounded text-sm text-left bg-red-100 text-red-800";
+                
+                let specificTip = "";
+                const textToCheck = transcript.toLowerCase();
+
+                // Detailed and specific error feedback in English
+                if (currentIndex === 0) {
+                    if (textToCheck.includes("mantega")) {
+                        specificTip = "<br>⚠️ <strong>Tip:</strong> It's not 'mantega'! Pronounce it as <strong>man-</strong><strong>T-E-I</strong><strong>-ga</strong>, emphasizing the stronger <strong>T-E-I</strong> syllable.";
+                    }
+                    if (textToCheck.includes("mana") || textToCheck.includes("manya")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> Watch out for <strong>manhã</strong>! Avoid the Spanish 'maña' sound. It has nasal sounds, and the strongest nasal part is <strong>-nhã</strong>.";
+                    }
+                } else if (currentIndex === 1) {
+                    if (textToCheck.includes("bebo")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> In <strong>bebo</strong>, the 'e' is a closed vowel sound, similar to the 'e' in the English word <strong>'they'</strong>.";
+                    }
+                    if (textToCheck.includes("zuco")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> It's <strong>suco</strong>, with a clear unvoiced <strong>'s'</strong> sound, not a 'z' sound ('zuco').";
+                    }
+                    if (textToCheck.includes("mana") || textToCheck.includes("manya")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> Remember <strong>manhã</strong> has a nasal <strong>-nhã</strong> sound.";
+                    }
+                } else if (currentIndex === 2) {
+                    if (textToCheck.includes("feijao") || textToCheck.includes("feiao")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> In <strong>feijão</strong>, pay close attention to the ending <strong>-ão</strong>, which is nasal and stressed.";
+                    }
+                } else if (currentIndex === 3) {
+                    if (textToCheck.includes("cocu") || textToCheck.includes("cocô")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> For <strong>coco</strong>, pronounce it clearly with open vowels, avoid saying 'cocô' or 'cocu'.";
+                    }
+                } else if (currentIndex === 4) {
+                    if (textToCheck.includes("lache") || !textToCheck.includes("lanche")) {
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> In <strong>lanche</strong>, the beginning sounds like <strong>lã</strong> (nasal 'an'), not a flat 'la'. Make it more nasal!";
+                    }
+                }
+
+                feedback.innerHTML = `❌ <strong>You said:</strong> '${transcript}'.${specificTip}<br><br><em>Try again or click 'Pular Frase'.</em>`;
+                nextBtn.classList.remove('hidden'); // Allows skipping even on error
             }
         };
 
-        nextBtn.onclick = () => {
+        skipBtn.onclick = nextBtn.onclick = () => {
             currentIndex++;
             if (currentIndex < sentences.length) {
                 display.innerText = '"' + sentences[currentIndex] + '"';
@@ -108,6 +148,7 @@
             } else {
                 display.innerText = "Parabéns! Você completou todas as frases.";
                 nextBtn.classList.add('hidden');
+                skipBtn.classList.add('hidden');
                 startBtn.classList.add('hidden');
                 listenBtn.classList.add('hidden');
                 feedback.classList.add('hidden');
