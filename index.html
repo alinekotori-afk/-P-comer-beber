@@ -101,10 +101,12 @@
                 let specificTip = "";
                 const textToCheck = transcript.toLowerCase();
 
-                // Detailed and specific error feedback in English
                 if (currentIndex === 0) {
+                    if (textToCheck.includes("pau")) {
+                        specificTip += "<br>🚨 <strong>Trap Alert!</strong> You said <strong>'pau'</strong>! Careful, you're walking into a trap! It's not 'pau', it's <strong>'pão'</strong> (which has a nasal sound).";
+                    }
                     if (textToCheck.includes("mantega")) {
-                        specificTip = "<br>⚠️ <strong>Tip:</strong> It's not 'mantega'! Pronounce it as <strong>man-</strong><strong>T-E-I</strong><strong>-ga</strong>, emphasizing the stronger <strong>T-E-I</strong> syllable.";
+                        specificTip += "<br>⚠️ <strong>Tip:</strong> It's not 'mantega'! Pronounce it as <strong>man-</strong><strong>T-E-I</strong><strong>-ga</strong>, emphasizing the stronger <strong>T-E-I</strong> syllable.";
                     }
                     if (textToCheck.includes("mana") || textToCheck.includes("manya")) {
                         specificTip += "<br>⚠️ <strong>Tip:</strong> Watch out for <strong>manhã</strong>! Avoid the Spanish 'maña' sound. It has nasal sounds, and the strongest nasal part is <strong>-nhã</strong>.";
@@ -123,6 +125,7 @@
                     if (textToCheck.includes("feijao") || textToCheck.includes("feiao")) {
                         specificTip += "<br>⚠️ <strong>Tip:</strong> In <strong>feijão</strong>, pay close attention to the ending <strong>-ão</strong>, which is nasal and stressed.";
                     }
+                    specificTip += "<br>⚠️ <strong>Tip for 'almoço':</strong> In Brazilian Portuguese, the final unstressed 'o' sounds like an <strong>'u'</strong> ([u] sound at the end, like 'almoçu'), not a mid-vowel 'o'!";
                 } else if (currentIndex === 3) {
                     if (textToCheck.includes("cocu") || textToCheck.includes("cocô")) {
                         specificTip += "<br>⚠️ <strong>Tip:</strong> For <strong>coco</strong>, pronounce it clearly with open vowels, avoid saying 'cocô' or 'cocu'.";
@@ -134,7 +137,7 @@
                 }
 
                 feedback.innerHTML = `❌ <strong>You said:</strong> '${transcript}'.${specificTip}<br><br><em>Try again or click 'Pular Frase'.</em>`;
-                nextBtn.classList.remove('hidden'); // Allows skipping even on error
+                nextBtn.classList.remove('hidden');
             }
         };
 
